@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class LoginDatabase implements LoginDatabaseInterface {
@@ -48,10 +49,25 @@ public class LoginDatabase implements LoginDatabaseInterface {
     @Override
     public JSONObject getUserInfo(JSONObject json) {
         JSONObject res = new JSONObject();
-        String sql2 = String.format("select * from user_info where account = '%s'", json.get("account"));
-        List<Map<String, Object>> rows = this.jdbcTemplate.queryForList(sql2);
+        JSONObject info = new JSONObject();
+        String sql = String.format("select * from user_info where account = '%s'", json.get("account"));
+        String router_sql = String.format("select * from user_router where account = '%s'", json.get("account"));
+        List<Map<String, Object>> rows = this.jdbcTemplate.queryForList(sql);
+        List<Map<String, Object>> router_rows = this.jdbcTemplate.queryForList(router_sql);
 
-        res.put("info", rows.get(0));
+        List<HashMap<String, String>> routers = router_rows.stream().map(item -> {
+            HashMap<String, String> map = new HashMap<>();
+
+            map.put("router", item.get("router").toString());
+            map.put("buttons", item.get("buttons").toString());
+
+            return map;
+        }).collect(Collectors.toList());
+
+        info.put("user", rows.get(0));
+        info.put("router", routers);
+
+        res.put("info", info);
         res.put("success", true);
 
         return res;

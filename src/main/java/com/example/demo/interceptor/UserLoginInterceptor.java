@@ -37,12 +37,14 @@ public class UserLoginInterceptor implements HandlerInterceptor {
         //检查是否有NeedLogin注释
         if (method.isAnnotationPresent(NeedLogin.class)) {
             DecodedJWT tokenInfo = JWTUtil.getTokenInfo(token);
-            String account = JWTUtil.getUserId(tokenInfo);
-            if (token != null && tokenInfo != null) {
-                String userToken = loginService.getUserToken(account);
+            if (tokenInfo != null) {
+                String account = JWTUtil.getUserId(tokenInfo);
+                if (token != null && tokenInfo != null) {
+                    String userToken = loginService.getUserToken(account);
 
-                if (userToken.equals(token) && !JWTUtil.isTimeOut(tokenInfo)) {
-                    return true;
+                    if (userToken.equals(token) && !JWTUtil.isTimeOut(tokenInfo)) {
+                        return true;
+                    }
                 }
             }
 
@@ -59,8 +61,8 @@ public class UserLoginInterceptor implements HandlerInterceptor {
                 out.append(JSON.toJSONString(res));
             } catch (IOException e) {
                 e.printStackTrace();
-            }finally {
-                if(out!=null)
+            } finally {
+                if (out != null)
                     out.close();
             }
 
