@@ -28,8 +28,36 @@ public class LoginService implements LoginServiceInterface {
     }
 
     @Override
-    public JSONObject getUserInfo(JSONObject json) {
-        JSONObject res = this.dao.getUserInfo(json);
+    public JSONObject getUserInfo(String token) {
+        JSONObject res = this.dao.getUserInfo(token);
+
+        return res;
+    }
+
+    @Override
+    public JSONObject addUser(JSONObject json) {
+        JSONObject res = this.dao.addUser(json);
+
+        return res;
+    }
+
+    @Override
+    public JSONObject deleteUser(JSONObject json) {
+        JSONObject res = this.dao.deleteUser(json);
+
+        return res;
+    }
+
+    @Override
+    public JSONObject editUser(JSONObject json,String token) {
+        JSONObject res = this.dao.editUser(json,token);
+
+        return res;
+    }
+
+    @Override
+    public JSONObject getUsers(String token) {
+        JSONObject res = this.dao.getUsers(token);
 
         return res;
     }
